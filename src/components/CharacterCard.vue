@@ -13,7 +13,7 @@
             <p class="card-text">
                 nickname: {{character.nickname}}
             </p>
-            <a @click="clickHandler(character.char_id)" class="btn btn-primary">Button</a>
+            <a @click="clickHandler(character.char_id)" class="btn btn-primary">Подробнее</a>
         </div>
     </div>
 </template>
@@ -26,7 +26,6 @@
     },
     methods: {
       clickHandler(id) {
-        console.log('======', id)
         this.$router.push(`detailedInfo?id=${id}`)
       }
     }
@@ -34,5 +33,10 @@
 </script>
 
 <style scoped>
-
+.card-w {
+    width: 250px;
+}
+.card-p {
+    margin-bottom: 20px;
+}
 </style>

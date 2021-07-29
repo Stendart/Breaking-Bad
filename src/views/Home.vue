@@ -1,35 +1,45 @@
 <template>
   <div class="home">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item link-primary point"  :class="{'active' : selectedSeason === idx}" v-for="(season, idx) in episodesBySeasons"
-            :key="idx">
-          <a  @click="selectSeason(idx)">Сезон {{idx + 1}}</a>
-        </li>
-      </ol>
-    </nav>
+    <SearchField class="search-field" @search="searchHandler"></SearchField>
+
+    <SeasonList :episodes-by-seasons="episodesBySeasons"
+                :selected-season="selectedSeason"
+                @selectSeason="selectSeason"
+    >
+    </SeasonList>
+
     <div class="season-wrapper">
-      <EpisodeList :episodes="episodesBySeasons[selectedSeason]" @selectEpisode="selectEpisode"></EpisodeList>
-      <EpisodeDetailedInformation :characters-list="charactersInEpisode" :death="deathInEpisode"></EpisodeDetailedInformation>
+      <EpisodeList :episodes="episodesBySearchStr.length ? episodesBySearchStr : episodesBySeasons[selectedSeason]"
+                   @selectEpisode="selectEpisode"
+      >
+      </EpisodeList>
+      <EpisodeDetailedInformation :characters-list="charactersInEpisode"
+                                  :death="deathInEpisode"
+      >
+      </EpisodeDetailedInformation>
+      <QuoteCard :quotes="quotes" v-if="quotes.length"></QuoteCard>
     </div>
 
   </div>
 </template>
 <script>
-  import {getAllEpisodes, getCharacterByName, getDeathByEpisode} from '../core/api'
-import {splitEpisodesBySeasons} from '../core/utils'
+import {splitEpisodesBySeasons} from '../core/utils';
 
+import SeasonList from '../components/SeasonList';
 import EpisodeList from '../components/EpisodeList';
 import EpisodeDetailedInformation from '../components/EpisodeDetailedInformation';
+import SearchField from '../components/SearchField';
+import QuoteCard from '../components/QuoteCard';
 
 export default {
   name: 'Home',
   data() {
     return {
-      allEpisodes: null,
       selectedSeason: 0,
       charactersInEpisode: [],
-      deathInEpisode: []
+      deathInEpisode: [],
+      quotes: [],
+      searchStr: null
     }
   },
   methods: {
@@ -53,9 +63,15 @@ export default {
       }
     },
     getCharactersInfo(charactersName) {
-      charactersName.forEach(cName => {
-        const character = this.$store.getters.charactersByName(cName);
+      let name;
+      if(typeof charactersName === 'string') {
+        name = [charactersName]
+      } else {
+        name = charactersName;
+      }
 
+      name.forEach(cName => {
+        const character = this.$store.getters.charactersByName(cName);
         if(character[0]) {
           this.charactersInEpisode.push(character[0]);
         }
@@ -74,26 +90,62 @@ export default {
       this.deathInEpisode = [];
       const death = this.$store.getters.deathByEpisode(episode.season, episode.episode)
       this.deathInEpisode = death;
+    },
+    getQuote(quotePart) {
+      if(!this.$store.getters.isExistQuote) {
+        this.$store.dispatch('allQuotes').then(()=> {
+          this.getQuoteByPart(quotePart);
+        })
+      } else {
+        this.getQuoteByPart(quotePart);
+      }
+    },
+    getQuoteByPart(quotePart) {
+      if(quotePart.length) {
+        this.quotes = this.$store.getters.quote(quotePart);
+        return;
+      }
+      this.quotes = [];
+    },
+    searchHandler(searchStr) {
+      this.searchStr = searchStr;
     }
   },
   created() {
-    getAllEpisodes().then(episodes => {
-      this.allEpisodes = episodes;
-    })
+    this.$store.dispatch('allEpisodes');
   },
   computed: {
+    allEpisodes() {
+      return this.$store.getters.allEpisodes
+    },
     episodesBySeasons() {
       return splitEpisodesBySeasons(this.allEpisodes)?? [];
     },
+    episodesBySearchStr() {
+      return this.searchStr?.length ? this.$store.getters.episodeByTitle(this.searchStr) : [];
+    }
+  },
+  watch: {
+    searchStr(newVal) {
+        this.checkCharactersInfo(newVal);
+        this.getQuote(newVal);
+    }
   },
 components: {
   EpisodeList,
-  EpisodeDetailedInformation
+  EpisodeDetailedInformation,
+  SearchField,
+  QuoteCard,
+  SeasonList
 }
 }
 </script>
 <style scoped>
   .season-wrapper {
     display: flex;
+  }
+  .search-field {
+      width: 50%;
+      min-width: 100px;
   }
 </style>

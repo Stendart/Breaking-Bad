@@ -30,23 +30,18 @@
 </script>
 
 <style scoped>
-    img {
-        width: 50%;
-    }
-    .card-wrap {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: stretch;
-        align-content: flex-start;
-        justify-content: space-between;
+img {
+    width: 50%;
+}
+.card-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    align-content: flex-start;
+    justify-content: space-between;
 
-        flex-grow: 1;
-    }
+    flex-grow: 1;
+}
 
-    .card-w {
-        width: 300px;
-    }
-    .card-p {
-        margin-bottom: 20px;
-    }
+
 </style>

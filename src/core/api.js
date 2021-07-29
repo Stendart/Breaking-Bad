@@ -20,3 +20,10 @@ export function getAllCharacters() {
       return data.json()
     })
 }
+
+export function getAllQuotes() {
+  return fetch(`${BASE_URL}quotes`)
+    .then(data => {
+      return data.json()
+    })
+}

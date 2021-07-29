@@ -1,23 +1,40 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {getAllCharacters, getAllDeath} from '../core/api';
+import {getAllCharacters, getAllDeath, getAllEpisodes, getAllQuotes} from '../core/api';
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    allEpisodes: null,
     allDeath: null,
     allCharacters: null,
+    allQuotes: null
   },
   mutations: {
+    setAllEpisodes(state, episodes) {
+      state.allEpisodes = episodes;
+    },
     setAllDeath(state, death) {
       state.allDeath = death;
     },
     setAllCharacters(state, characters) {
       state.allCharacters = characters;
-    }
+    },
+    setAllQuotes(state, quote) {
+      state.allQuotes = quote;
+    },
   },
   actions: {
+    allEpisodes({commit}) {
+      return new Promise((resolve, reject) => {
+        const allEpisodes = getAllEpisodes();
+        allEpisodes.then(episodes => {
+          commit('setAllEpisodes', episodes);
+          resolve();
+        })
+      })
+    },
     allDeath({commit}) {
       return new Promise((resolve, reject) => {
         const allDeath = getAllDeath();
@@ -35,9 +52,24 @@ export default new Vuex.Store({
           resolve();
         })
       })
+    },
+    allQuotes({commit}) {
+      return new Promise((resolve, reject) => {
+        const allCharacters = getAllQuotes();
+        allCharacters.then(quotes => {
+          commit('setAllQuotes', quotes)
+          resolve();
+        })
+      })
     }
   },
   getters: {
+    allEpisodes: state => {
+      return state.allEpisodes;
+    },
+    episodeByTitle: state => title => {
+      return state.allEpisodes?.filter(episode => episode.title.toLowerCase().includes(title));
+    },
     deathByEpisode: state => (season, episode) => {
       return state.allDeath?.filter(d => {
         return d.season === +season && d.episode === +episode;
@@ -61,6 +93,13 @@ export default new Vuex.Store({
     },
     isExistCharacters: state => {
       return !!state.allCharacters;
+    },
+
+    quote: state => quotePart => {
+      return state.allQuotes?.filter(q => q.quote.toLowerCase().includes(quotePart))
+    },
+    isExistQuote: state => {
+      return !!state.allQuotes;
     },
 
   },

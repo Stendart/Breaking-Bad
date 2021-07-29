@@ -23,10 +23,12 @@
                 <router-link class="btn btn-primary" to="/">Home</router-link>
             </div>
         </div>
+        <TimeLine></TimeLine>
     </div>
 </template>
 
 <script>
+import TimeLine from '../components/TimeLine';
   export default {
     name: "CharactersInformation",
     created() {
@@ -48,6 +50,9 @@
         return this.$store.getters.deathByCharacterName(name);
       }
     },
+    components: {
+      TimeLine
+    }
   }
 </script>
 
