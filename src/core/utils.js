@@ -15,14 +15,23 @@ export function splitEpisodesBySeasons(allEpisodes) {
   return episodesBySeason;
 }
 
-function searchEpisodeByTitle(title, allEpisodes) {
-  return allEpisodes.filter(episode => episode.title.includes(title));
+export function generateOccupationList(characters) {
+  
+  return characters?.reduce((ac, c) => {
+    ac.add(...c.occupation);
+    return ac;
+  }, new Set())
 }
 
-function searchEpisodeByCharacterName(name, allEpisodes) {
-  return allEpisodes.filter(episode => episode.characters.map(ch => ch.includes(name)));
-}
-
-function searchEpisodeByQuote(quote, allEpisodes) {
-  return allEpisodes.filter(episode => episode.characters.map(ch => ch.includes(name)));
+export function fillOccupationList(occupationList, characters) {
+  const list = {};
+  characters?.reduce((acc, ch) => {
+    return ch.occupation.map(occupation => {
+      if(occupationList?.has(occupation)) {
+        list[occupation] ? list[occupation].push(ch) : list[occupation] = new Array(ch);
+        return list
+      }
+    })
+  }, {})
+  return list
 }

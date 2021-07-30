@@ -7,21 +7,25 @@
                         <h6 class="card-title">Timeline</h6>
                         <div id="content">
                             <ul class="timeline">
-                                <li class="event" data-date="12:30 - 1:00pm">
-                                    <h3>Registration</h3>
-                                    <p>Get here on time, it's first come first serve. Be late, get turned away.</p>
+                                <li class="event" :data-date="lifeEvents.birthday.date">
+                                    <h3>{{lifeEvents.birthday.event}}</h3>
                                 </li>
-                                <li class="event" data-date="2:30 - 4:00pm">
-                                    <h3>Opening Ceremony</h3>
-                                    <p>Get ready for an exciting event, this will kick off in amazing fashion with MOP &amp; Busta Rhymes as an opening show.</p>
+                                <li class="event"
+                                    v-for="episode in lifeEvents.episodes" :key="episode.id"
+                                    :data-date="`${episode.air_date} `"
+                                >
+                                    <h3>{{episode.title}}</h3>
                                 </li>
-                                <li class="event" data-date="5:00 - 8:00pm">
-                                    <h3>Main Event</h3>
-                                    <p>This is where it all goes down. You will compete head to head with your friends and rivals. Get ready!</p>
+                                <li class="event" v-for="d in lifeEvents.death"
+                                    :key="d.id"
+                                    data-date="Смерть"
+                                >
+                                    <h3>{{d.death}}</h3>
+                                    <p>Причина: {{d.cause}}</p>
                                 </li>
-                                <li class="event" data-date="8:30 - 9:30pm">
-                                    <h3>Closing Ceremony</h3>
-                                    <p>See how is the victor and who are the losers. The big stage is where the winners bask in their own glory.</p>
+                                <li class="event" data-date="Status">
+                                    <h3>{{lifeEvents.status}}</h3>
+                                    <p></p>
                                 </li>
                             </ul>
                         </div>
@@ -34,7 +38,10 @@
 
 <script>
   export default {
-    name: "TimeLine"
+    name: "TimeLine",
+    props: {
+      lifeEvents: {}
+    }
   }
 </script>
 
@@ -102,7 +109,7 @@
     }
 
     .timeline .event:before {
-        left: -207px;
+        left: -217px;
         content: attr(data-date);
         text-align: right;
         font-weight: 100;

@@ -1,12 +1,21 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link to="/home">Home</router-link> |
+      <router-link to="/Occupation">Occupation</router-link> |
+      <router-link to="/">Title</router-link>
     </div>
     <router-view/>
   </div>
 </template>
+
+<script>
+  export default {
+    created() {
+      this.$store.dispatch('allEpisodes');
+    },
+  }
+</script>
 
 <style>
 #app {
@@ -19,6 +28,7 @@
 
 #nav {
   padding: 30px;
+  text-align: center;
 }
 
 #nav a {
@@ -27,7 +37,7 @@
 }
 
 #nav a.router-link-exact-active {
-  color: #42b983;
+  color: #0d6efd;
 }
 
 .point {

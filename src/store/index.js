@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {getAllCharacters, getAllDeath, getAllEpisodes, getAllQuotes} from '../core/api';
+import {generateOccupationList} from '../core/utils';
 
 Vue.use(Vuex)
 
@@ -70,6 +71,9 @@ export default new Vuex.Store({
     episodeByTitle: state => title => {
       return state.allEpisodes?.filter(episode => episode.title.toLowerCase().includes(title));
     },
+    episodesByCharacterName: state => name => {
+      return state.allEpisodes?.filter(e =>  !!e.characters.filter(ch => ch === name).length);
+    },
     deathByEpisode: state => (season, episode) => {
       return state.allDeath?.filter(d => {
         return d.season === +season && d.episode === +episode;
@@ -78,10 +82,16 @@ export default new Vuex.Store({
     deathByCharacterName: state => name => {
       return state.allDeath?.filter(d =>  d.death === name)[0];
     },
+    responsibleDeathByCharacterName: state => name => {
+      return state.allDeath?.filter(d =>  d.responsible === name);
+    },
     isExistDeath: state => {
       return !!state.allDeath;
     },
 
+    allCharacters: state =>  {
+      return state.allCharacters;
+    },
     charactersByName: state => name => {
       return state.allCharacters?.filter(ch => {
         return ch.name.toLowerCase().trim() === name.toLowerCase().trim() ||
@@ -101,6 +111,10 @@ export default new Vuex.Store({
     isExistQuote: state => {
       return !!state.allQuotes;
     },
+
+    occupation: state => {
+      return generateOccupationList(state.allCharacters)
+    }
 
   },
   modules: {

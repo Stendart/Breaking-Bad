@@ -111,9 +111,6 @@ export default {
       this.searchStr = searchStr;
     }
   },
-  created() {
-    this.$store.dispatch('allEpisodes');
-  },
   computed: {
     allEpisodes() {
       return this.$store.getters.allEpisodes
@@ -131,7 +128,8 @@ export default {
         this.getQuote(newVal);
     }
   },
-components: {
+
+  components: {
   EpisodeList,
   EpisodeDetailedInformation,
   SearchField,
@@ -141,11 +139,11 @@ components: {
 }
 </script>
 <style scoped>
-  .season-wrapper {
-    display: flex;
-  }
-  .search-field {
-      width: 50%;
-      min-width: 100px;
-  }
+.season-wrapper {
+  display: flex;
+}
+.search-field {
+    width: 50%;
+    min-width: 100px;
+}
 </style>
